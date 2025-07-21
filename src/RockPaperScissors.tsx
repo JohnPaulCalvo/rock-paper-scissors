@@ -597,19 +597,13 @@ function UserMenu() {
 }
 
 function ThemeToggle() {
-	const {theme, setTheme} = useThemeContext();
+	const {theme, toggleTheme} = useThemeContext();
 
 	return (
-		<Button
-			onClick={() => {
-				setTheme(theme === 'dark' ? 'light' : 'dark');
-			}}
-		>
-			{theme === 'dark' ? (
-				<MoonIcon className="size-5" />
-			) : (
-				<SunIcon className="size-5" />
-			)}
+		<Button onClick={toggleTheme}>
+			{theme === 'dark' && <MoonIcon className="size-5" />}
+			{theme === 'light' && <SunIcon className="size-5" />}
+			{theme === 'system' && <LaptopMinimalIcon className="size-5" />}
 		</Button>
 	);
 }

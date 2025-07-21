@@ -1,56 +1,37 @@
-import {useCallback, useEffect, useState} from 'react';
-import {z} from 'zod';
+import {type Dispatch, type SetStateAction, useEffect} from 'react';
+import {type TernaryDarkMode, useTernaryDarkMode} from 'usehooks-ts';
 
-const ThemeDefinition = z.enum(['dark', 'light']).catch('dark');
-
-const STORAGE_KEY = 'RockPaperScissors/Theme';
-
-export type Theme = z.infer<typeof ThemeDefinition>;
+export type Theme = TernaryDarkMode;
 
 export interface UseThemeReturn {
-	theme: Theme;
-	setTheme: (theme: Theme) => void;
+	theme: TernaryDarkMode;
+	setTheme: Dispatch<SetStateAction<TernaryDarkMode>>;
+	toggleTheme: () => void;
 }
 
-export function useTheme() {
-	const [theme, setTheme_] = useState<Theme>('dark');
+export function useTheme(): UseThemeReturn {
+	const {
+		isDarkMode,
+		ternaryDarkMode,
+		setTernaryDarkMode,
+		toggleTernaryDarkMode,
+	} = useTernaryDarkMode({
+		defaultValue: 'system',
+		localStorageKey: 'RockPaperScissors/Theme',
+		initializeWithValue: true,
+	});
 
-	const setTheme = useCallback((theme: Theme) => {
-		setTheme_(theme);
-
-		const root = document.documentElement;
-
-		if (theme === 'dark') {
-			root.classList.add('dark');
-			root.style.colorScheme = 'dark';
-			localStorage.setItem(STORAGE_KEY, theme);
+	useEffect(() => {
+		if (isDarkMode) {
+			document.documentElement.classList.add('dark');
 		} else {
-			root.classList.remove('dark');
-			root.style.colorScheme = 'light';
-			localStorage.setItem(STORAGE_KEY, theme);
+			document.documentElement.classList.remove('dark');
 		}
-	}, []);
-
-	useEffect(() => {
-		setTheme(ThemeDefinition.parse(localStorage.getItem(STORAGE_KEY)));
-	}, [setTheme]);
-
-	useEffect(() => {
-		const handleChange = (e: StorageEvent) => {
-			if (e.key === STORAGE_KEY) {
-				setTheme(ThemeDefinition.parse(e.newValue));
-			}
-		};
-
-		window.addEventListener('storage', handleChange);
-
-		return () => {
-			window.removeEventListener('storage', handleChange);
-		};
-	}, [setTheme]);
+	}, [isDarkMode]);
 
 	return {
-		theme,
-		setTheme,
+		theme: ternaryDarkMode,
+		setTheme: setTernaryDarkMode,
+		toggleTheme: toggleTernaryDarkMode,
 	};
 }
