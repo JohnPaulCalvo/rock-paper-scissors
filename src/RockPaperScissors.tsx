@@ -1,5 +1,5 @@
-import { Dialog, Field, Menu, Portal, Tooltip } from "@ark-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {Dialog, Field, Menu, Portal, Tooltip} from '@ark-ui/react';
+import {zodResolver} from '@hookform/resolvers/zod';
 import {
 	CopyrightIcon,
 	Gamepad2Icon,
@@ -16,53 +16,53 @@ import {
 	TrendingUpIcon,
 	UserIcon,
 	XIcon,
-} from "lucide-react";
+} from 'lucide-react';
 import {
 	type ComponentPropsWithRef,
 	createContext,
 	useContext,
 	useEffect,
 	useState,
-} from "react";
-import Confetti from "react-confetti";
-import CountUp from "react-countup";
-import { useForm } from "react-hook-form";
-import Avatar from "react-nice-avatar";
-import { twMerge } from "tailwind-merge";
-import invariant from "tiny-invariant";
-import { useSound } from "use-sound";
-import { useTimeout, useWindowSize } from "usehooks-ts";
-import { z } from "zod";
-import buttonPressAudio from "./assets/button-press.mp3";
-import emojiHandshake from "./assets/emoji-handshake.gif";
-import emojiSkull from "./assets/emoji-skull.gif";
-import emojiThumbsDown from "./assets/emoji-thumbs-down.gif";
-import emojiTrophy from "./assets/emoji-trophy.gif";
-import gameDrawAudio from "./assets/game-draw.wav";
-import gameLoseAudio from "./assets/game-lose.mp3";
-import gameOverAudio from "./assets/game-over.mp3";
-import gameWinAudio from "./assets/game-win.wav";
-import { PaperIcon } from "./PaperIcon";
-import { RockIcon } from "./RockIcon";
+} from 'react';
+import Confetti from 'react-confetti';
+import CountUp from 'react-countup';
+import {useForm} from 'react-hook-form';
+import Avatar from 'react-nice-avatar';
+import {twMerge} from 'tailwind-merge';
+import invariant from 'tiny-invariant';
+import {useSound} from 'use-sound';
+import {useTimeout, useWindowSize} from 'usehooks-ts';
+import {z} from 'zod';
+import buttonPressAudio from './assets/button-press.mp3';
+import emojiHandshake from './assets/emoji-handshake.gif';
+import emojiSkull from './assets/emoji-skull.gif';
+import emojiThumbsDown from './assets/emoji-thumbs-down.gif';
+import emojiTrophy from './assets/emoji-trophy.gif';
+import gameDrawAudio from './assets/game-draw.wav';
+import gameLoseAudio from './assets/game-lose.mp3';
+import gameOverAudio from './assets/game-over.mp3';
+import gameWinAudio from './assets/game-win.wav';
+import {PaperIcon} from './icons/PaperIcon';
+import {RockIcon} from './icons/RockIcon';
+import {ScissorsIcon} from './icons/ScissorsIcon';
 import {
-	RockPaperScissorsContext,
+	RockPaperScissorsProvider,
 	useRockPaperScissorsContext,
-} from "./RockPaperScissorsContext";
-import { ScissorsIcon } from "./ScissorsIcon";
-import { useThemeContext } from "./ThemeContext";
-import { toaster } from "./toaster";
+} from './RockPaperScissorsContext';
+import {useThemeContext} from './ThemeContext';
+import {toaster} from './toaster';
 import {
 	type LeaderboardEntry,
 	type RockPaperScissorsEvent,
 	type Score,
 	useRockPaperScissors,
-} from "./useRockPaperScissors";
+} from './useRockPaperScissors';
 
 export function RockPaperScissors() {
 	const rockPaperScissors = useRockPaperScissors();
 
 	return (
-		<RockPaperScissorsContext value={rockPaperScissors}>
+		<RockPaperScissorsProvider value={rockPaperScissors}>
 			<div className="flex flex-col min-h-dvh relative">
 				<Navbar />
 
@@ -82,7 +82,7 @@ export function RockPaperScissors() {
 
 			<GameRoundAlerts />
 			<LeaderboardAlerts />
-		</RockPaperScissorsContext>
+		</RockPaperScissorsProvider>
 	);
 }
 
@@ -95,13 +95,13 @@ function GameChoices() {
 				className="w-full p-4 bg-teal-50 dark:bg-teal-800/15 rounded-full hover:scale-110 transition-transform duration-200 disabled:cursor-default text-teal-600 dark:text-teal-100"
 				aria-label="Rock"
 				onClick={() => {
-					if (rockPaperScissors.details.status === "PLAYING") {
-						rockPaperScissors.pick("ROCK");
+					if (rockPaperScissors.details.status === 'PLAYING') {
+						rockPaperScissors.pick('ROCK');
 						return;
 					}
 
-					if (rockPaperScissors.details.status === "WAITING") {
-						rockPaperScissors.triggerEvent({ type: "GAME_REQUEST" });
+					if (rockPaperScissors.details.status === 'WAITING') {
+						rockPaperScissors.triggerEvent({type: 'GAME_REQUEST'});
 					}
 				}}
 			>
@@ -111,13 +111,13 @@ function GameChoices() {
 				className="w-full p-4 bg-teal-50 dark:bg-teal-800/15 rounded-full hover:scale-110 transition-transform duration-200 disabled:cursor-default text-teal-600 dark:text-teal-100"
 				aria-label="Paper"
 				onClick={() => {
-					if (rockPaperScissors.details.status === "PLAYING") {
-						rockPaperScissors.pick("PAPER");
+					if (rockPaperScissors.details.status === 'PLAYING') {
+						rockPaperScissors.pick('PAPER');
 						return;
 					}
 
-					if (rockPaperScissors.details.status === "WAITING") {
-						rockPaperScissors.triggerEvent({ type: "GAME_REQUEST" });
+					if (rockPaperScissors.details.status === 'WAITING') {
+						rockPaperScissors.triggerEvent({type: 'GAME_REQUEST'});
 					}
 				}}
 			>
@@ -127,13 +127,13 @@ function GameChoices() {
 				className="w-full p-4 bg-teal-50 dark:bg-teal-800/15 rounded-full hover:scale-110 transition-transform duration-200 disabled:cursor-default text-teal-600 dark:text-teal-100"
 				aria-label="Scissors"
 				onClick={() => {
-					if (rockPaperScissors.details.status === "PLAYING") {
-						rockPaperScissors.pick("SCISSORS");
+					if (rockPaperScissors.details.status === 'PLAYING') {
+						rockPaperScissors.pick('SCISSORS');
 						return;
 					}
 
-					if (rockPaperScissors.details.status === "WAITING") {
-						rockPaperScissors.triggerEvent({ type: "GAME_REQUEST" });
+					if (rockPaperScissors.details.status === 'WAITING') {
+						rockPaperScissors.triggerEvent({type: 'GAME_REQUEST'});
 					}
 				}}
 			>
@@ -150,9 +150,9 @@ function StartGame() {
 		name: z
 			.string()
 			.trim()
-			.min(2, "Name must be at least 2 characters")
-			.max(25, "Name must be at most 25 characters")
-			.regex(/^[a-zA-Z0-9 ]+$/, "Name must only contain letters and numbers")
+			.min(2, 'Name must be at least 2 characters')
+			.max(25, 'Name must be at most 25 characters')
+			.regex(/^[a-zA-Z0-9 ]+$/, 'Name must only contain letters and numbers')
 			.superRefine((value, ctx) => {
 				if (
 					rockPaperScissors.leaderboard.some(
@@ -162,7 +162,7 @@ function StartGame() {
 					ctx.addIssue({
 						code: z.ZodIssueCode.custom,
 						fatal: true,
-						message: "Name is already taken",
+						message: 'Name is already taken',
 					});
 				}
 			}),
@@ -173,13 +173,13 @@ function StartGame() {
 	const form = useForm({
 		resolver: zodResolver(schema),
 		defaultValues: {
-			name: "",
+			name: '',
 		},
 	});
 
 	useEffect(() => {
 		const unsubscribe = rockPaperScissors.subscribe((event) => {
-			if (event.type === "GAME_REQUEST") {
+			if (event.type === 'GAME_REQUEST') {
 				setOpen(true);
 			}
 		});
@@ -194,7 +194,7 @@ function StartGame() {
 				setOpen(details.open);
 
 				if (details.open) {
-					form.setFocus("name");
+					form.setFocus('name');
 				} else {
 					form.reset();
 				}
@@ -204,8 +204,8 @@ function StartGame() {
 		>
 			<Dialog.Trigger
 				className={twMerge(
-					"w-fit mx-auto px-6 py-3 text-xl bg-teal-50 text-teal-700 dark:bg-teal-800/15 dark:text-teal-50 flex items-center justify-center gap-2 rounded-full font-heading font-bold ui-not-open:animate-bounce",
-					rockPaperScissors.details.status !== "WAITING" && "hidden",
+					'w-fit mx-auto px-6 py-3 text-xl bg-teal-50 text-teal-700 dark:bg-teal-800/15 dark:text-teal-50 flex items-center justify-center gap-2 rounded-full font-heading font-bold ui-not-open:animate-bounce',
+					rockPaperScissors.details.status !== 'WAITING' && 'hidden',
 				)}
 				asChild
 			>
@@ -233,7 +233,7 @@ function StartGame() {
 							{(api) => (
 								<form
 									className="mt-10"
-									onSubmit={form.handleSubmit(({ name }) => {
+									onSubmit={form.handleSubmit(({name}) => {
 										rockPaperScissors.startGame(name);
 										api.setOpen(false);
 									})}
@@ -245,7 +245,7 @@ function StartGame() {
 										<Field.Input
 											className="block w-full h-14 px-5 font-heading text-lg border border-neutral-200 dark:border-teal-700 outline-none rounded-full bg-transparent dark:bg-teal-800/50"
 											placeholder="eg. Mario"
-											{...form.register("name")}
+											{...form.register('name')}
 										/>
 										<Field.ErrorText className="text-red-500 dark:text-red-400 text-sm">
 											{form.formState.errors.name?.message}
@@ -273,37 +273,37 @@ function GameRoundAlerts() {
 	const [playGameOverSound, gameOverSound] = useSound(gameOverAudio, {
 		volume: 0.75,
 	});
-	const [playGameWinSound] = useSound(gameWinAudio, { volume: 0.75 });
-	const [playGameLoseSound] = useSound(gameLoseAudio, { volume: 0.75 });
-	const [playGameDrawSound] = useSound(gameDrawAudio, { volume: 0.75 });
+	const [playGameWinSound] = useSound(gameWinAudio, {volume: 0.75});
+	const [playGameLoseSound] = useSound(gameLoseAudio, {volume: 0.75});
+	const [playGameDrawSound] = useSound(gameDrawAudio, {volume: 0.75});
 
 	const [open, setOpen] = useState(false);
 	const [data, setData] = useState<Extract<
 		RockPaperScissorsEvent,
-		{ type: "ROUND_COMPLETE" } | { type: "GAME_COMPLETE" }
+		{type: 'ROUND_COMPLETE'} | {type: 'GAME_COMPLETE'}
 	> | null>(null);
 
 	useEffect(() => {
 		const unsubscribe = rockPaperScissors.subscribe((event) => {
-			if (event.type === "ROUND_COMPLETE" || event.type === "GAME_COMPLETE") {
+			if (event.type === 'ROUND_COMPLETE' || event.type === 'GAME_COMPLETE') {
 				setData(event);
 				setOpen(true);
 
-				if (event.type === "GAME_COMPLETE") {
-					playGameOverSound({ forceSoundEnabled: true });
+				if (event.type === 'GAME_COMPLETE') {
+					playGameOverSound({forceSoundEnabled: true});
 				}
 
-				if (event.type === "ROUND_COMPLETE") {
-					if (event.status === "WIN") {
-						playGameWinSound({ forceSoundEnabled: true });
+				if (event.type === 'ROUND_COMPLETE') {
+					if (event.status === 'WIN') {
+						playGameWinSound({forceSoundEnabled: true});
 					}
 
-					if (event.status === "LOSS") {
-						playGameLoseSound({ forceSoundEnabled: true });
+					if (event.status === 'LOSS') {
+						playGameLoseSound({forceSoundEnabled: true});
 					}
 
-					if (event.status === "TIE") {
-						playGameDrawSound({ forceSoundEnabled: true });
+					if (event.status === 'TIE') {
+						playGameDrawSound({forceSoundEnabled: true});
 					}
 				}
 			}
@@ -332,9 +332,9 @@ function GameRoundAlerts() {
 				<Dialog.Positioner className="fixed inset-0 flex items-center justify-center">
 					<Dialog.Content className="w-[32rem] h-[30rem] p-12 text-neutral-800 bg-white rounded-2xl ui-open:animate-dialog-in ui-closed:animate-dialog-out relative shadow-lg">
 						<div className="flex flex-col h-full items-center">
-							{data?.type === "ROUND_COMPLETE" && (
+							{data?.type === 'ROUND_COMPLETE' && (
 								<>
-									{data.status === "WIN" && (
+									{data.status === 'WIN' && (
 										<>
 											<img src={emojiTrophy} alt="" className="w-40 h-auto" />
 											<div className="grow text-center">
@@ -346,7 +346,7 @@ function GameRoundAlerts() {
 										</>
 									)}
 
-									{data.status === "LOSS" && (
+									{data.status === 'LOSS' && (
 										<>
 											<img
 												src={emojiThumbsDown}
@@ -362,7 +362,7 @@ function GameRoundAlerts() {
 										</>
 									)}
 
-									{data.status === "TIE" && (
+									{data.status === 'TIE' && (
 										<>
 											<img
 												src={emojiHandshake}
@@ -390,7 +390,7 @@ function GameRoundAlerts() {
 								</>
 							)}
 
-							{data?.type === "GAME_COMPLETE" && (
+							{data?.type === 'GAME_COMPLETE' && (
 								<>
 									<img src={emojiSkull} alt="" className="w-40 h-auto" />
 
@@ -432,7 +432,7 @@ function GameRoundAlerts() {
 function GameStatus() {
 	const rockPaperScissors = useRockPaperScissorsContext();
 
-	if (rockPaperScissors.details.status === "WAITING") return;
+	if (rockPaperScissors.details.status === 'WAITING') return;
 
 	return (
 		<div className="flex justify-between items-center px-2">
@@ -446,7 +446,7 @@ function GameStatus() {
 				</GameScoreContext>
 			</div>
 
-			{rockPaperScissors.details.status === "PLAYING" ? (
+			{rockPaperScissors.details.status === 'PLAYING' ? (
 				<div className="font-mono flex items-center gap-1">
 					<span className="text-sm leading-none text-neutral-700 dark:text-white/75">
 						Round
@@ -458,8 +458,8 @@ function GameStatus() {
 			) : (
 				<Button
 					className={twMerge(
-						"w-fit mx-auto px-6 py-3 text-xl bg-teal-50 text-teal-700 dark:bg-teal-800/15 dark:text-teal-50  flex items-center justify-center gap-2 rounded-full font-heading font-bold ui-not-open:animate-bounce",
-						rockPaperScissors.details.status !== "FINISHED" && "hidden",
+						'w-fit mx-auto px-6 py-3 text-xl bg-teal-50 text-teal-700 dark:bg-teal-800/15 dark:text-teal-50  flex items-center justify-center gap-2 rounded-full font-heading font-bold ui-not-open:animate-bounce',
+						rockPaperScissors.details.status !== 'FINISHED' && 'hidden',
 					)}
 					onClick={() => {
 						rockPaperScissors.restartGame();
@@ -530,7 +530,7 @@ function Navbar() {
 			<ScissorsLineDashed className="size-6 text-teal-800/80 dark:text-white/60" />
 			<div className="flex items-center gap-3">
 				<div className="flex shrink-0 items-center gap-2">
-					{rockPaperScissors.details.status === "WAITING" ? (
+					{rockPaperScissors.details.status === 'WAITING' ? (
 						<div className="size-6 bg-neutral-50 dark:bg-teal-800/30 rounded-full flex items-center justify-center">
 							<UserIcon className="size-4" />
 						</div>
@@ -542,9 +542,9 @@ function Navbar() {
 					)}
 
 					<span>
-						Hi,{" "}
-						{rockPaperScissors.details.status === "WAITING"
-							? "Guest"
+						Hi,{' '}
+						{rockPaperScissors.details.status === 'WAITING'
+							? 'Guest'
 							: rockPaperScissors.details.player.name}
 						!
 					</span>
@@ -565,9 +565,9 @@ function UserMenu() {
 	const rockPaperScissors = useRockPaperScissorsContext();
 
 	return (
-		<Menu.Root lazyMount unmountOnExit positioning={{ placement: "bottom" }}>
+		<Menu.Root lazyMount unmountOnExit positioning={{placement: 'bottom'}}>
 			<Menu.Trigger
-				disabled={rockPaperScissors.details.status === "WAITING"}
+				disabled={rockPaperScissors.details.status === 'WAITING'}
 				className="disabled:cursor-not-allowed disabled:opacity-75"
 				asChild
 			>
@@ -597,15 +597,15 @@ function UserMenu() {
 }
 
 function ThemeToggle() {
-	const { theme, setTheme } = useThemeContext();
+	const {theme, setTheme} = useThemeContext();
 
 	return (
 		<Button
 			onClick={() => {
-				setTheme(theme === "dark" ? "light" : "dark");
+				setTheme(theme === 'dark' ? 'light' : 'dark');
 			}}
 		>
-			{theme === "dark" ? (
+			{theme === 'dark' ? (
 				<MoonIcon className="size-5" />
 			) : (
 				<SunIcon className="size-5" />
@@ -714,22 +714,22 @@ function LeaderboardItem() {
 function LeaderboardAlerts() {
 	const rockPaperScissors = useRockPaperScissorsContext();
 
-	const { height, width } = useWindowSize();
+	const {height, width} = useWindowSize();
 	const [data, setData] = useState<Extract<
 		RockPaperScissorsEvent,
-		{ type: "LEADERBOARD_ACHIEVED" }
+		{type: 'LEADERBOARD_ACHIEVED'}
 	> | null>(null);
 
 	useTimeout(() => setData(null), data ? 5000 : null);
 
 	useEffect(() => {
 		const unsubscribe = rockPaperScissors.subscribe((event) => {
-			if (event.type === "LEADERBOARD_ACHIEVED") {
+			if (event.type === 'LEADERBOARD_ACHIEVED') {
 				setData(event);
 
 				toaster.success({
-					title: "Leaderboard Achieved",
-					description: "You have achieved a leaderboard position!",
+					title: 'Leaderboard Achieved',
+					description: 'You have achieved a leaderboard position!',
 				});
 			}
 		});
@@ -774,7 +774,7 @@ function Footer() {
 		<footer className="py-4 px-5 flex justify-center items-center gap-2">
 			<CopyrightIcon className="size-4 text-white/75" />
 			<p className="flex justify-center items-center gap-1 text-sm">
-				Made with{" "}
+				Made with{' '}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 24 24"
@@ -794,14 +794,14 @@ function Button({
 	onClick,
 	children,
 	...props
-}: ComponentPropsWithRef<"button">) {
+}: ComponentPropsWithRef<'button'>) {
 	const [play] = useSound(buttonPressAudio);
 
 	return (
 		<button
 			type="button"
 			onClick={(e) => {
-				play({ forceSoundEnabled: true });
+				play({forceSoundEnabled: true});
 				onClick?.(e);
 			}}
 			{...props}

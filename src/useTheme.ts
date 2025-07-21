@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import { z } from "zod";
+import {useCallback, useEffect, useState} from 'react';
+import {z} from 'zod';
 
-const ThemeDefinition = z.enum(["dark", "light"]).catch("dark");
+const ThemeDefinition = z.enum(['dark', 'light']).catch('dark');
 
-const STORAGE_KEY = "RockPaperScissors/Theme";
+const STORAGE_KEY = 'RockPaperScissors/Theme';
 
 export type Theme = z.infer<typeof ThemeDefinition>;
 
@@ -13,20 +13,20 @@ export interface UseThemeReturn {
 }
 
 export function useTheme() {
-	const [theme, setTheme_] = useState<Theme>("dark");
+	const [theme, setTheme_] = useState<Theme>('dark');
 
 	const setTheme = useCallback((theme: Theme) => {
 		setTheme_(theme);
 
 		const root = document.documentElement;
 
-		if (theme === "dark") {
-			root.classList.add("dark");
-			root.style.colorScheme = "dark";
+		if (theme === 'dark') {
+			root.classList.add('dark');
+			root.style.colorScheme = 'dark';
 			localStorage.setItem(STORAGE_KEY, theme);
 		} else {
-			root.classList.remove("dark");
-			root.style.colorScheme = "light";
+			root.classList.remove('dark');
+			root.style.colorScheme = 'light';
 			localStorage.setItem(STORAGE_KEY, theme);
 		}
 	}, []);
@@ -42,10 +42,10 @@ export function useTheme() {
 			}
 		};
 
-		window.addEventListener("storage", handleChange);
+		window.addEventListener('storage', handleChange);
 
 		return () => {
-			window.removeEventListener("storage", handleChange);
+			window.removeEventListener('storage', handleChange);
 		};
 	}, [setTheme]);
 

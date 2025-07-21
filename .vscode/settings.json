@@ -1,0 +1,12 @@
+{
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
+	},
+	"editor.defaultFormatter": "biomejs.biome",
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"prettier.enable": false,
+	"typescript.tsdk": "node_modules/typescript/lib"
+}

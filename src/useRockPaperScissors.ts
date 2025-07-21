@@ -1,8 +1,8 @@
-import { useRef } from "react";
-import { genConfig } from "react-nice-avatar";
-import invariant from "tiny-invariant";
-import { useLocalStorage } from "usehooks-ts";
-import { z } from "zod";
+import {useRef} from 'react';
+import {genConfig} from 'react-nice-avatar';
+import invariant from 'tiny-invariant';
+import {useLocalStorage} from 'usehooks-ts';
+import {z} from 'zod';
 
 /**
  * --------------------------------------------------------
@@ -23,34 +23,34 @@ const ScoreDefinition = z.object({
 });
 
 const PlayingDetailsDefinition = z.object({
-	status: z.literal("PLAYING"),
+	status: z.literal('PLAYING'),
 	player: PlayerDefinition,
 	score: ScoreDefinition,
 	round: z.number(),
 });
 
 const FinishedDetailsDefinition = z.object({
-	status: z.literal("FINISHED"),
+	status: z.literal('FINISHED'),
 	player: PlayerDefinition,
 	score: ScoreDefinition,
 	round: z.number(),
 });
 
 const WaitingDetailsDefinition = z.object({
-	status: z.literal("WAITING"),
+	status: z.literal('WAITING'),
 	player: PlayerDefinition.optional(),
 	round: z.number().optional(),
 	score: ScoreDefinition.optional(),
 });
 
 const DetailsDefinition = z
-	.discriminatedUnion("status", [
+	.discriminatedUnion('status', [
 		PlayingDetailsDefinition,
 		FinishedDetailsDefinition,
 		WaitingDetailsDefinition,
 	])
 	.catch({
-		status: "WAITING",
+		status: 'WAITING',
 	});
 
 const LeaderboardEntryDefinition = z.object({
@@ -80,33 +80,33 @@ export type Details = z.infer<typeof DetailsDefinition>;
 export type LeaderboardEntry = z.infer<typeof LeaderboardEntryDefinition>;
 export type Leaderboard = z.infer<typeof LeaderboardDefinition>;
 
-export type Choice = "ROCK" | "PAPER" | "SCISSORS";
+export type Choice = 'ROCK' | 'PAPER' | 'SCISSORS';
 
 export type RockPaperScissorsEvent =
 	| {
-			type: "ROUND_COMPLETE";
-			status: "WIN" | "LOSS" | "TIE";
+			type: 'ROUND_COMPLETE';
+			status: 'WIN' | 'LOSS' | 'TIE';
 			details: Details__Playing;
 	  }
 	| {
-			type: "GAME_COMPLETE";
-			status: "WIN" | "LOSS";
+			type: 'GAME_COMPLETE';
+			status: 'WIN' | 'LOSS';
 			details: Details__Finished;
 	  }
 	| {
-			type: "LEADERBOARD_ACHIEVED";
+			type: 'LEADERBOARD_ACHIEVED';
 			details: Details__Finished | Details__Playing;
 	  }
 	| {
-			type: "GAME_ENDED";
+			type: 'GAME_ENDED';
 			details?: never;
 	  }
 	| {
-			type: "GAME_RESTARTED";
+			type: 'GAME_RESTARTED';
 			details?: Details__Finished;
 	  }
 	| {
-			type: "GAME_REQUEST";
+			type: 'GAME_REQUEST';
 			details?: never;
 	  };
 
@@ -141,7 +141,7 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 	}
 
 	const [leaderboard, setLeaderboard] = useLocalStorage<LeaderboardEntry[]>(
-		"RockPaperScissors/Leaderboard",
+		'RockPaperScissors/Leaderboard',
 		[],
 		{
 			serializer: (value) => {
@@ -154,9 +154,9 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 	);
 
 	const [details, setStatus] = useLocalStorage<Details>(
-		"RockPaperScissors/GameDetails",
+		'RockPaperScissors/GameDetails',
 		{
-			status: "WAITING",
+			status: 'WAITING',
 		},
 		{
 			serializer: (value) => {
@@ -170,7 +170,7 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 
 	function startGame(playerName: string) {
 		setStatus({
-			status: "PLAYING",
+			status: 'PLAYING',
 			player: {
 				id: window.crypto.randomUUID(),
 				name: playerName,
@@ -186,23 +186,23 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 	}
 
 	function endGame() {
-		setStatus({ status: "WAITING" });
-		triggerEvent({ type: "GAME_ENDED" });
+		setStatus({status: 'WAITING'});
+		triggerEvent({type: 'GAME_ENDED'});
 	}
 
 	function restartGame() {
-		if (details.status !== "FINISHED") return;
+		if (details.status !== 'FINISHED') return;
 
 		triggerEvent({
-			type: "GAME_RESTARTED",
+			type: 'GAME_RESTARTED',
 			details,
 		});
 
 		setStatus((prev) => {
-			invariant(prev.status === "FINISHED");
+			invariant(prev.status === 'FINISHED');
 
 			return {
-				status: "PLAYING",
+				status: 'PLAYING',
 				player: prev.player,
 				round: 1,
 				score: {
@@ -219,7 +219,7 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 	}
 
 	function updateLeaderboard(value: Details) {
-		if (value.status === "WAITING") return;
+		if (value.status === 'WAITING') return;
 
 		if (leaderboard.length < 10) {
 			setLeaderboard((prev) => {
@@ -257,7 +257,7 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 		if (!shouldAddToLeaderboard) return;
 		if (!isOnLeaderboard) {
 			triggerEvent({
-				type: "LEADERBOARD_ACHIEVED",
+				type: 'LEADERBOARD_ACHIEVED',
 				details: value,
 			});
 		}
@@ -284,13 +284,13 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 	}
 
 	function pick(choice: Choice) {
-		if (details.status !== "PLAYING") return;
+		if (details.status !== 'PLAYING') return;
 
 		const computerChoice = randomChoice();
 
 		if (choice === computerChoice) {
 			setStatus((prev) => {
-				invariant(prev.status === "PLAYING");
+				invariant(prev.status === 'PLAYING');
 
 				return {
 					...prev,
@@ -312,8 +312,8 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 			});
 
 			triggerEvent({
-				type: "ROUND_COMPLETE",
-				status: "TIE",
+				type: 'ROUND_COMPLETE',
+				status: 'TIE',
 				details: {
 					...details,
 					round: details.round + 1,
@@ -328,12 +328,12 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 		}
 
 		if (
-			(choice === "ROCK" && computerChoice === "SCISSORS") ||
-			(choice === "PAPER" && computerChoice === "ROCK") ||
-			(choice === "SCISSORS" && computerChoice === "PAPER")
+			(choice === 'ROCK' && computerChoice === 'SCISSORS') ||
+			(choice === 'PAPER' && computerChoice === 'ROCK') ||
+			(choice === 'SCISSORS' && computerChoice === 'PAPER')
 		) {
 			setStatus((prev) => {
-				invariant(prev.status === "PLAYING");
+				invariant(prev.status === 'PLAYING');
 
 				return {
 					...prev,
@@ -355,8 +355,8 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 			});
 
 			triggerEvent({
-				type: "ROUND_COMPLETE",
-				status: "WIN",
+				type: 'ROUND_COMPLETE',
+				status: 'WIN',
 				details: {
 					...details,
 					round: details.round + 1,
@@ -372,11 +372,11 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 
 		if (details.score.losses >= 3) {
 			setStatus((prev) => {
-				invariant(prev.status === "PLAYING");
+				invariant(prev.status === 'PLAYING');
 
 				return {
 					...prev,
-					status: "FINISHED",
+					status: 'FINISHED',
 					round: prev.round + 1,
 					score: {
 						...prev.score,
@@ -387,7 +387,7 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 
 			updateLeaderboard({
 				...details,
-				status: "FINISHED",
+				status: 'FINISHED',
 				round: details.round + 1,
 				score: {
 					...details.score,
@@ -396,11 +396,11 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 			});
 
 			triggerEvent({
-				type: "GAME_COMPLETE",
-				status: "LOSS",
+				type: 'GAME_COMPLETE',
+				status: 'LOSS',
 				details: {
 					...details,
-					status: "FINISHED",
+					status: 'FINISHED',
 					round: details.round + 1,
 					score: {
 						...details.score,
@@ -413,7 +413,7 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 		}
 
 		setStatus((prev) => {
-			invariant(prev.status === "PLAYING");
+			invariant(prev.status === 'PLAYING');
 
 			return {
 				...prev,
@@ -435,8 +435,8 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 
 		subscribers.current.forEach((subscriber) => {
 			subscriber({
-				type: "ROUND_COMPLETE",
-				status: "LOSS",
+				type: 'ROUND_COMPLETE',
+				status: 'LOSS',
 				details,
 			});
 		});
@@ -455,6 +455,6 @@ export function useRockPaperScissors(): UseRockPaperScissorsReturn {
 }
 
 function randomChoice() {
-	const choices: Choice[] = ["ROCK", "PAPER", "SCISSORS"];
+	const choices: Choice[] = ['ROCK', 'PAPER', 'SCISSORS'];
 	return choices[Math.floor(Math.random() * choices.length)];
 }
