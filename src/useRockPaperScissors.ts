@@ -2,7 +2,7 @@ import {useRef} from 'react';
 import {genConfig} from 'react-nice-avatar';
 import invariant from 'tiny-invariant';
 import {useLocalStorage} from 'usehooks-ts';
-import {z} from 'zod';
+import * as z from 'zod';
 
 /**
  * --------------------------------------------------------
@@ -13,7 +13,7 @@ import {z} from 'zod';
 const PlayerDefinition = z.object({
 	id: z.string(),
 	name: z.string(),
-	avatar: z.record(z.any()),
+	avatar: z.record(z.string(), z.any()),
 });
 
 const ScoreDefinition = z.object({
